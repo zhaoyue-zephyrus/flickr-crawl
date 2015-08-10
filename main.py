@@ -34,7 +34,7 @@ for keyword in keyword_list:
     os.mkdir(sub_dir)
   
   count = 0
-  for photo in flickr.walk(text=keyword):
+  for photo in flickr.walk(text=keyword,sort="relevance"):
     farm_id = photo.get('farm')
     server_id = photo.get('server')
     photo_id = photo.get('id')
