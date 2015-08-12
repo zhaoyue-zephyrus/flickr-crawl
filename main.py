@@ -5,8 +5,8 @@ import sys
 import os
 
 ## sign in flickr api
-api_key = u''
-api_secret = u''
+api_key = u'api_key'
+api_secret = u'api_secret'
 flickr = flickrapi.FlickrAPI(api_key, api_secret)
 
 ## argc
