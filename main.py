@@ -5,8 +5,8 @@ import sys
 import os
 
 ## sign in flickr api
-api_key = u'api_key'
-api_secret = u'api_secret'
+api_key = u'347db880da3e912779c32d986d56443a'
+api_secret = u'895464d0db3751ed'
 flickr = flickrapi.FlickrAPI(api_key, api_secret)
 
 ## argc
@@ -17,6 +17,7 @@ else:
   tag_list = sys.argv[1]
   root_dir = sys.argv[2]
   imageNr = int(sys.argv[3])
+  CRAWL_TAG_FLAG = False
 
 ## keyword list
 keyword_list=[]
@@ -30,10 +31,11 @@ fin.close()
 if not os.path.exists(root_dir):
   os.mkdir(root_dir)
 
-fout = open("flickr-image.list",'w')
-# <id>; <keyword>; <tag>,<tag>,...\n
-# <id>; <keyword>; <tag>,<tag>,...\n
-# ...
+if (CRAWL_TAG_FLAG):
+  fout = open("flickr-image.list",'w')
+  # <id>; <keyword>; <tag>,<tag>,...\n
+  # <id>; <keyword>; <tag>,<tag>,...\n
+  # ...
 
 for keyword in keyword_list:
   sub_dir = root_dir + keyword + "/"
@@ -46,12 +48,13 @@ for keyword in keyword_list:
     server_id = photo.get('server')
     photo_id = photo.get('id')
     secret = photo.get('secret')
-    print "farm-id = %s, server-id = %s, photo-id = %s, secret = %s" %  (farm_id, server_id, photo_id, secret)
-    resp = flickr.tags.getListPhoto(photo_id=photo_id)
-    tags = []
-    for tag in resp.getchildren()[0].getchildren()[0].getchildren():
-      tags.append(unidecode(tag.get("raw")))
-    fout.write("%s%s.jpg;%s;%s\n"% (sub_dir,photo_id,keyword,','.join(tags)) )
+    #print "farm-id = %s, server-id = %s, photo-id = %s, secret = %s" %  (farm_id, server_id, photo_id, secret)
+    if (CRAWL_TAG_FLAG):
+      resp = flickr.tags.getListPhoto(photo_id=photo_id)
+      tags = []
+      for tag in resp.getchildren()[0].getchildren()[0].getchildren():
+        tags.append(unidecode(tag.get("raw")))
+      fout.write("%s%s.jpg;%s;%s\n"% (sub_dir,photo_id,keyword,','.join(tags)) )
     url = "https://farm%s.staticflickr.com/%s/%s_%s.jpg" % (farm_id, server_id, photo_id, secret)
     r = requests.get(url)
     with open(sub_dir+"%s.jpg" % photo_id, 'wb') as f:
